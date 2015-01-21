@@ -1,0 +1,40 @@
+﻿<%
+  var promotions = [];
+  if (theme.stickies=== null) {
+    promotions = []
+  }else if (typeof theme.stickies== "string"&&theme.stickies.constructor==String){
+    promotions.push(theme.stickes);
+  }else{
+    promotions = theme.stickies;
+  }
+  var promotions = promotions.map(function (promo) {
+    return "_posts/"+promo+".md";
+	});
+  var promoposts = page.posts.filter(function(po){
+    return promotions.some(function(po1){
+	  return po1 == po.source;
+      })
+	});
+  var normalposts= page.posts.filter(function(po){
+    return !promotions.some(function(po1){
+	  return po1 == po.source;
+      })
+	});
+%>
+
+<div id="main">
+<% promoposts.each(function(item){ %>
+  <%- partial('_partial/sticky', {item: item, index: true,desc: true}) %>
+<% }); %>
+<% normalposts.each(function(item){ %>
+  <%- partial('_partial/article', {item: item, index: true,desc: true}) %>
+<% }); %>
+<% if (page.total > 1){ %>
+  <nav id="page-nav" class="clearfix">
+    <%- paginator({
+      prev_text: '&laquo; Prev',
+      next_text: 'Next &raquo;'
+    }) %>
+  </nav>
+<% } %>
+</div>
